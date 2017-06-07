@@ -143,8 +143,10 @@ property of the `Task` instance
 
 This module exports following typescript functions:
 
-`transform(instance:any,source:Type,target:Type): any` - transforms an instance from one representation to another
-`isShapeOf(source:Type, target:Type)` - checks if source type is shape of target type
-`isDomainOf(source:Type, target:Type)` - checks if source type is domain of target type.
+* `transform(instance:any,source:Type,target:Type): any` - transforms an instance from one representation to another
+
+* `isShapeOf(source:Type, target:Type)` - checks if source type is shape of target type
+
+* `isDomainOf(source:Type, target:Type)` - checks if source type is domain of target type.
 
 
