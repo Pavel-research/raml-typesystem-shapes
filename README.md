@@ -138,3 +138,5 @@ TaskData:
 
 in this example `subTasks` property of the `TaskData` will be inited by values of the `id` property of the values `subTasks`
 property of the `Task` instance
+
+### Usage
