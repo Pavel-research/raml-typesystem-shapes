@@ -29,7 +29,7 @@ NewTaskData:
     description: string
 ```
 
-Now we need to mark that `NewTaskData` is not conceptually independent thing but just a representation of the `Task` data type
+Now we need to mark that `NewTaskData` is not independent entity but just a representation of the `Task` data type
 in `Callable` this may be done by using `shapeOf` annotation:
 
 This annotation is defined by the following annotation type: 
