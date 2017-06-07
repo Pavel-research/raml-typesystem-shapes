@@ -76,6 +76,8 @@ Value conversion is executed by the following algorithm:
 1. if values have a type with same structural constraints then no conversion is needed
 2. If target value is a shape of model property value then conversion from model to shape is executed
 3. If target value is a reference to model property value then conversion to reference is executed
+4. If the source value is a reference to model property value, then system checks if it is capable to resolve reference to the instance,
+   and if there is no possibility to resolve it conversion should abort, otherwise resolved reference should be written to the target property.
 4. Otherwise conversion can not be performed and algorithm should abort.
 
 ### Examples:
