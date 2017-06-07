@@ -9,6 +9,9 @@ of the same model entity as a separate RAML types.
 
 `Callable` supports following alternative approach to modelling different shapes of the model entity:
 
+
+### Background
+
 Let's say that we have a `Task` data type which models a *Task* business entity   
 
 ```raml
