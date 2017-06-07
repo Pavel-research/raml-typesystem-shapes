@@ -29,7 +29,7 @@ NewTaskData:
     description: string
 ```
 
-Now we need to mark that `NewTaskData` is not independent entity but just a representation of the `Task` data type
+Now we need to mark that `NewTaskData` is not conceptually different entity but just a representation of the `Task` data type
 in `Callable` this may be done by using `shapeOf` annotation:
 
 This annotation is defined by the following annotation type: 
@@ -51,7 +51,8 @@ NewTaskData:
     name: string
     description: string
 ```
- 
+### Instance Transformation:
+
 Now let's talk about how callable transforms instance of the `NewTaskData` into the instance of the task: 
 
 We use following algorithm to perform a conversion which is performed for every property 
