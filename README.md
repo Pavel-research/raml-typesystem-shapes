@@ -52,28 +52,23 @@ NewTaskData:
     description: string
 ```
  
-
-
-
-
----
-
-## Conversion from the model to shape:  
-
-Conversion from the model to shape is defined when system knows how to fill all properties
-of shape type.
+Now let's talk about how callable transforms instance of the `NewTaskData` into the instance of the task: 
 
 We use following algorithm to perform a conversion which is performed for every property 
-of shape type.
+of source type.
 
-1. If domain model has a property with a same name exists: check if the system knows how to transform value of this
-property into value of the shape property. If transformation is undefined then whole conversion of model instance to 
+1. If target type has a property with a same name exists: check if the system knows how to transform value of this
+property into value of the target property. If transformation is undefined then whole conversion of model instance to 
+target instance can not be executed
+
+2. Else if target property has an annotation `property` and this annotation values is the name of the property
+of domain class, or qualified name of the property of the source type, then: check if the system knows how to transform value of this
+property into value of the target property. If transformation is undefined then whole conversion of model instance to 
 shape instance can not be executed
 
-2. If shape property has an annotation `property` and this annotation values is the name of the property
-of domain class, or qualified name of the property of the domain class, then: check if the system knows how to transform value of this
-property into value of the shape property. If transformation is undefined then whole conversion of model instance to 
-shape instance can not be executed
+3. If target property value has a default it is initialized into it's default value, if target is an array and if it is a required property 
+it is initialized into empty array, if target is has an object type and it is required it is initialized into empty instance of 
+target type *(using the same scheme as for property value)*, otherwise it stays undefined.
 
 Value conversion is executed by the following algorithm: 
 
@@ -82,8 +77,24 @@ Value conversion is executed by the following algorithm:
 3. If target value is a reference to model property value then conversion to reference is executed
 4. Otherwise conversion can not be performed and algorithm should abort.
 
+### Examples:
 
+For example lets assume that we convert following instance of `NewTaskData` into instance of `Task`: 
 
+```yaml
+name: Buy milk
+description: I should buy the milk
+```
+
+the result will be 
+
+```yaml
+name: Buy milk
+description: I should buy the milk
+friends: []
+```
+
+Now lets look on the following example:
 
 ```raml
 PersonData:
@@ -95,3 +106,30 @@ PersonData:
       type: string
 
 ```
+
+In this example `PersonData` property `name` will be inited from Person property `name`, and `PersonData` property
+ `lastName` will be inited from `Person` property `last_name`
+ 
+More complex example:
+
+```raml
+Task:
+  properties:
+    id: integer
+    name: string
+    description: string
+    subTasks: Task[]
+TaskData:
+    properties:
+      id: integer
+      name: string
+      description: string
+      subTasks: 
+        type: array
+        items:
+          type: integer
+          (shapes.reference): Task.id        
+```
+
+in this example `subTasks` property of the `TaskData` will be inited by values of the `id` property of the values `subTasks`
+property of the `Task` instance
