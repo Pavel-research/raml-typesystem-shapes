@@ -7,7 +7,7 @@
 One way to model it in `Callable` is [scopes](scopes.md), however some times you need to model different shapes 
 of the same model entity as a separate RAML types.
 
-`Callable` supports following alternative approach to modelling different shapes of the model entity:
+This repository contains a typescript module supporting an alternative approach to modelling different shapes of the model entity.
 
 ### Background
 
