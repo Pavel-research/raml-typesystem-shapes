@@ -140,3 +140,11 @@ in this example `subTasks` property of the `TaskData` will be inited by values o
 property of the `Task` instance
 
 ### Usage
+
+This module exports following typescript functions:
+
+`transform(instance:any,source:Type,target:Type): any` - transforms an instance from one representation to another
+`isShapeOf(source:Type, target:Type)` - checks if source type is shape of target type
+`isDomainOf(source:Type, target:Type)` - checks if source type is domain of target type.
+
+
