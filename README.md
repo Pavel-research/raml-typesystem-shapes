@@ -22,7 +22,7 @@ Task:
     subTasks: Task[]
 ```
 
-However when new *Task* is being added in the system we represent it with following RAML type:   
+When new *Task* is being added in the system we prefer to represent incoming payload with following RAML type:   
 
 ```raml
 NewTaskData:
