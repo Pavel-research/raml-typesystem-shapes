@@ -57,10 +57,12 @@ NewTaskData:
 
 Now let's talk about how callable transforms instance of the `NewTaskData` into the instance of the task: 
 
+#### Transformation from Shape type to Domain type
+
 We use following algorithm to perform a conversion which is performed for every property 
 of source type.
 
-1. If target type has a property with a same name exists: check if the system knows how to transform value of this
+1. If target type has a property with a same name: check if the system knows how to transform value of this
 property into value of the target property. If transformation is undefined then whole conversion of model instance to 
 target instance can not be executed
 
@@ -73,14 +75,37 @@ shape instance can not be executed
 it is initialized into empty array, if target is has an object type and it is required it is initialized into empty instance of 
 target type *(using the same scheme as for property value)*, otherwise it stays undefined.
 
+4. If target property is pattern or additional property then throw error(this usecase is not  supported at this moment)
+
+
+#### Transformation from Domain type to Shape type
+
+We use following algorithm to perform a conversion which is performed for every property 
+of shape type.
+
+1. If domain type has a property with a same name: check if the system knows how to transform value of this
+property into value of the target property. If transformation is undefined then whole conversion of model instance to 
+target instance can not be executed
+
+2. Else if shape property has an annotation `property` and this annotation values is the name of the property
+of domain class, or qualified name of the property of the source type, then: check if the system knows how to transform value of this
+property into value of the target property. If transformation is undefined then whole conversion of model instance to 
+shape instance can not be executed
+
+3. Else abort with error (all properties of shape type should be resolved to some properties of domain type).
+
+
+### Value conversion
+
 Value conversion is executed by the following algorithm: 
 
 1. if values have a type with same structural constraints then no conversion is needed
 2. If target value is a shape of model property value then conversion from model to shape is executed
 3. If target value is a reference to model property value then conversion to reference is executed
-4. If the source value is a reference to model property value, then system checks if it is capable to resolve reference to the instance,
+4. If target value type is assignable from source value type return a model property value 
+5. If the source value is a reference to model property value, then system checks if it is capable to resolve reference to the instance,
    and if there is no possibility to resolve it conversion should abort, otherwise resolved reference should be written to the target property.
-4. Otherwise conversion can not be performed and algorithm should abort.
+6. Otherwise conversion can not be performed and algorithm should abort.
 
 ### Examples:
 
@@ -145,8 +170,16 @@ This module exports following typescript functions:
 
 * `transform(instance:any,source:Type,target:Type,referenceResolver?: (v:any,referenceType:Type)=>any): any` - transforms an instance from one representation to another
 
+* `transformFunc(source:Type,target:Type,referenceResolver?: (v:any,referenceType:Type)=>any): any` - returns a function capable to transform instances from one representation to another or null if transformation can not be performed
+
 * `isShapeOf(source:Type, target:Type)` - checks if source type is shape of target type
 
 * `isDomainOf(source:Type, target:Type)` - checks if source type is domain of target type.
 
+Usage example:
 
+```typescript
+
+let tFunc=shapes.transformFunc(domainType, shapeType)//aquire a transformation function
+var transformed=tFunc({name: "Pavel", "lastName": "Petrochenko"});
+```
