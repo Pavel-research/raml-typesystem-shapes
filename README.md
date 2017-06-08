@@ -179,7 +179,7 @@ This module exports following typescript functions:
 Usage example:
 
 ```typescript
-
+import shapes=require("raml-typesystem-shapes")
 let tFunc=shapes.transformFunc(domainType, shapeType)//aquire a transformation function
-var transformed=tFunc({name: "Pavel", "lastName": "Petrochenko"});
+var transformed=tFunc({name: "Pavel", lastName: "Petrochenko"});//perform transformation
 ```
