@@ -57,35 +57,28 @@ export function isShapeOf(t: rti.Type, domain: rti.Type) {
         }
     }
     var result = false;
-    t.annotations().forEach(a => {
-        var def = a.definition();
-        if (a.name() == "shapeOf") {
-            var vl = a.value();
-            var reg = a.owner().registry();
-            var value = reg.getType(vl);
+    var reg = t.registry();
+    var vl = t.annotation("shapeOf");
+    if (vl) {
+        var value = reg.getType(vl);
+        if (isShapeOf(value, domain)) {
+            result = true;
+        }
+    }
+    var vl = t.annotation("reference");
+
+    if (typeof vl == "string") {
+        var vls = vl;
+        var dotLocation = vls.lastIndexOf('.');
+        if (dotLocation != -1) {
+            var dereference = vls.substring(0, dotLocation);
+            var value = reg.getType(dereference);
             if (isShapeOf(value, domain)) {
                 result = true;
             }
         }
-    });
-    t.annotations().forEach(a => {
-        var def = a.definition();
-        if (a.name() == "reference") {
-            var vl = a.value();
-            var reg = a.owner().registry();
-            if (typeof vl == "string") {
-                var vls = vl;
-                var dotLocation = vls.lastIndexOf('.');
-                if (dotLocation != -1) {
-                    var dereference = vls.substring(0, dotLocation);
-                    var value = reg.getType(dereference);
-                    if (isShapeOf(value, domain)) {
-                        result = true;
-                    }
-                }
-            }
-        }
-    });
+    }
+
     return result;
 }
 export function isDomainOf(source: rti.Type, target: rti.Type) {
@@ -93,16 +86,7 @@ export function isDomainOf(source: rti.Type, target: rti.Type) {
 }
 
 function referenceValue(source: Type): string {
-    var res: string = null;
-    source.annotations().forEach(a => {
-        if (a.name() == "reference") {
-            var vl = a.value();
-            if (typeof vl == "string") {
-                res = vl;
-            }
-        }
-    })
-    return res;
+    return source.annotation("reference");
 }
 
 function referencePath(source: Type): string {
