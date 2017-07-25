@@ -1,12 +1,12 @@
 {
   "name": "raml-typesystem-shapes",
-  "version": "0.0.22",
+  "version": "0.0.24",
   "private": false,
   "scripts": {
     "compile": "rimraf -rf dist/ && ./node_modules/typescript/bin/tsc"
   },
   "main": "./dist/src/shapes.js",
-  "typings": "./dist/shapes.d.ts",
+  "typings": "./dist/src/shapes.d.ts",
   "devDependencies": {
     "typescript": "^2.0.0",
     "dev-env-installer": "0.0.5",

@@ -45,6 +45,63 @@ function storeTo(name: string, f: Func1): Func2 {
         y[name] = f(x);
     }
 }
+
+export function directDomain(t: rti.Type){
+    var reg = t.registry();
+    var vl = t.annotation("shapeOf");
+    if (vl) {
+        var value = reg.getType(vl);
+        if (value) {
+            return value;
+        }
+    }
+    if (t.annotation("reference")){
+        return t;
+    }
+    while (!t.name()) {
+        var found = false;
+        t.declaredFacets().forEach(m => {
+            let metaInformationKind = m.kind();
+            if (metaInformationKind == rti.types.MetaInformationKind.NotScalar||metaInformationKind == rti.types.MetaInformationKind.Required||metaInformationKind == rti.types.MetaInformationKind.DiscriminatorValue || metaInformationKind == rti.types.MetaInformationKind.DisplayName || metaInformationKind == rti.types.MetaInformationKind.Annotation) {
+
+            }
+            else {
+                found=true;
+            }
+        })
+        if (!found&&t.superTypes().length==1){
+            t=t.superTypes()[0];
+            continue
+        }
+        else {
+            break
+        }
+    }
+    return t;
+}
+
+export function domainWithRefs(t: rti.Type):rti.Type{
+    var t=directDomain(t);
+    var vl = t.annotation("reference");
+    if (typeof vl == "string") {
+        var vls = vl;
+        var dotLocation = vls.lastIndexOf('.');
+        if (dotLocation != -1) {
+            var dereference = vls.substring(0, dotLocation);
+            var value = t.registry().getType(dereference);
+            if (value){
+                return value;
+            }
+        }
+        else{
+            var value = t.registry().getType(vls);
+            if (value){
+                return value;
+            }
+        }
+    }
+    return t;
+}
 export function isShapeOf(t: rti.Type, domain: rti.Type) {
     if (t == domain) {
         return true;
@@ -66,7 +123,6 @@ export function isShapeOf(t: rti.Type, domain: rti.Type) {
         }
     }
     var vl = t.annotation("reference");
-
     if (typeof vl == "string") {
         var vls = vl;
         var dotLocation = vls.lastIndexOf('.');
@@ -77,10 +133,16 @@ export function isShapeOf(t: rti.Type, domain: rti.Type) {
                 result = true;
             }
         }
+        else{
+            var value = reg.getType(vl);
+            if (isShapeOf(value, domain)) {
+                result = true;
+            }
+        }
     }
-
     return result;
 }
+
 export function isDomainOf(source: rti.Type, target: rti.Type) {
     return isShapeOf(target, source);
 }
@@ -121,6 +183,7 @@ function referencePath(source: Type): string {
     }
     return propertyPath;
 }
+
 function resolveReference(source: Type, value: any): any {
     var propertyPath = referencePath(source);
     var segments = propertyPath.split('.');
